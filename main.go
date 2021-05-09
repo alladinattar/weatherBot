@@ -41,6 +41,7 @@ func getImageAboutWeather(temp float64) string {
 		if temp > 5 {
 			return goodWthr
 		}
+		return badWthr
 	} else if season == "winter" {
 		if temp > -10 {
 			return goodWthr
@@ -54,7 +55,6 @@ func getImageAboutWeather(temp float64) string {
 		return badWthr
 
 	} else {
-
 		log.Println(errors.New("error when get season"))
 	}
 	return ""
