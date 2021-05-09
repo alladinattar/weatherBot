@@ -29,7 +29,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: latest
-          args:   -c=./.golangci.yml --tests=false -v
+          args:   -c=./..golangci.yml --tests=false -v
           skip-go-installation: false
           skip-pkg-cache: true
           skip-build-cache: true
