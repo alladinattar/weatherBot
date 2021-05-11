@@ -82,7 +82,7 @@ func main() {
 		res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + update.Message.Text + "&appid=" + os.Getenv("apiToken"))
 
 		if res.StatusCode == http.StatusNotFound {
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprint("Город не найден"))
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprint("City not found"))
 			bot.Send(msg)
 			continue
 		}
@@ -102,7 +102,8 @@ func main() {
 		log.Println(getSeason())
 		image := getImageAboutWeather(wthr.Main.Temp - 272)
 		uploadPhoto := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, image)
-		uploadPhoto.Caption = fmt.Sprint(int(wthr.Main.Temp-272), " градусов")
+
+		uploadPhoto.Caption = fmt.Sprint(int(wthr.Main.Temp-272), " degrees")
 
 		log.Println(wthr.Main.Temp)
 		bot.Send(uploadPhoto)
