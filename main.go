@@ -2,65 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tgBot/models"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	time2 "time"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
-
-func getSeason() string {
-	month := time2.Now().Month()
-	log.Println(int(month))
-	if month >= 6 && month <= 8 {
-		return "summer"
-	} else if month > 8 && month <= 11 {
-		return "autumn"
-	} else if month > 11 && month <= 2 {
-		return "winter"
-	} else {
-		return "spring"
-	}
-}
-
-func getImageAboutWeather(temp float64) string {
-	var goodWthr string = "./images/goodWeather.png"
-	var badWthr string = "./images/badWeather.png"
-	season := getSeason()
-	if season == "summer" {
-		if temp > 20 {
-			return goodWthr
-		}
-		return badWthr
-
-	} else if season == "autumn" {
-		if temp > 5 {
-			return goodWthr
-		}
-		return badWthr
-	} else if season == "winter" {
-		if temp > -10 {
-			return goodWthr
-		}
-		return badWthr
-
-	} else if season == "spring" {
-		if temp > 5 {
-			return goodWthr
-		}
-		return badWthr
-
-	} else {
-		log.Println(errors.New("error when get season"))
-	}
-	return ""
-}
 
 func main() {
 	models.InitDB("./weatherData.db")
@@ -112,19 +62,19 @@ func main() {
 			bot.Send(msg)
 			log.Fatal(err)
 		}
-		wthr := weather{}
+		wthr := models.Weather{}
 		body, _ := ioutil.ReadAll(res.Body)
 		err = json.Unmarshal(body, &wthr)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Println(getSeason())
-		image := getImageAboutWeather(wthr.Main.Temp - 272)
+		err = user.AddCitySearch(update.Message.Text)
+		if err!=nil{log.Fatal(err)}
+
+		image := wthr.GetImage()
 		uploadPhoto := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, image)
 
 		uploadPhoto.Caption = fmt.Sprint(int(wthr.Main.Temp-272), " degrees")
-
-		log.Println(wthr.Main.Temp)
 		bot.Send(uploadPhoto)
 	}
 }
