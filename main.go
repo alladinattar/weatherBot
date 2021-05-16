@@ -1,11 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/tgBot/models"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -63,20 +63,12 @@ func getImageAboutWeather(temp float64) string {
 }
 
 func main() {
-	database, _ :=
-		sql.Open("sqlite3", "./weatherData.db")
-	statement, _ :=
-		database.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, citySearch TEXT)")
-	statement.Exec()
+	models.InitDB("./weatherData.db")
 
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("botToken"))
 	if err != nil {
 		log.Panic(err)
 	}
-	/*homeLocation := tgbotapi.NewKeyboardButton("Set home location")
-	newLocation := tgbotapi.NewKeyboardButton("Request new location weather")
-	keyboard := tgbotapi.NewReplyKeyboard([]tgbotapi.KeyboardButton{homeLocation, newLocation})*/
-
 	bot.Debug = true
 
 	log.Println("Authorized on account ", bot.Self.UserName)
@@ -86,27 +78,20 @@ func main() {
 	updates, err := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil { // ignore any non-Message Updates
+		if update.Message == nil {
 			continue
 		}
-
+		user := models.User{UserName: update.Message.From.UserName}
 		command := update.Message.Command()
 		if len(command) != 0 {
-			/*if command == "start" {
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Select action")
-				msg.ReplyMarkup = keyboard
-				_, err := bot.Send(msg)
-				if err!=nil{log.Fatal(err)}
+			if command == "start" {
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprint("Please, enter city"))
+				bot.Send(msg)
 				continue
-			} else */
-			if command == "history" {
-				rows, _ :=
-					database.Query("SELECT citySearch FROM users WHERE name = '" + update.Message.From.UserName + "'")
-				var city string
-				var cities string = ""
-				for rows.Next() {
-					rows.Scan(&city)
-					cities = cities + city + "\n"
+			} else if command == "history" {
+				var cities string
+				for _, city := range user.GetHistory() {
+					cities = city + "\n"
 				}
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, cities)
 				bot.Send(msg)
@@ -120,9 +105,6 @@ func main() {
 			bot.Send(msg)
 			continue
 		}
-		statement, _ =
-			database.Prepare("INSERT INTO users (name, citySearch) VALUES (?, ?)")
-		statement.Exec(update.Message.From.UserName, update.Message.Text)
 
 		if err != nil {
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprint(err))
