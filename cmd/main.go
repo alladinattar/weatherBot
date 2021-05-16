@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/tgBot/models"
 	"io/ioutil"
 	"log"
@@ -69,7 +68,9 @@ func main() {
 			log.Fatal(err)
 		}
 		err = user.AddCitySearch(update.Message.Text)
-		if err!=nil{log.Fatal(err)}
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		image := wthr.GetImage()
 		uploadPhoto := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, image)
