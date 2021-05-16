@@ -90,8 +90,9 @@ func main() {
 				continue
 			} else if command == "history" {
 				var cities string
-				for _, city := range user.GetHistory() {
-					cities = city + "\n"
+				history := user.GetHistory()
+				for _, city := range history {
+					cities = cities + city + "\n"
 				}
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, cities)
 				bot.Send(msg)
