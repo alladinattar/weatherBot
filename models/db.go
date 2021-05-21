@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3" //sqlite driver
 	"log"
 )
@@ -28,8 +29,9 @@ func AddCitySearch(city string, userName string) error {
 }
 
 func GetHistoryByName(userName string) []string {
+	fmt.Println("SELECT * FROM users WHERE name='" + userName + "' ORDER BY id DESC LIMIT 5")
 	rows, _ :=
-		db.Query("SELECT citySearch FROM users WHERE name = '" + userName + "'")
+		db.Query("SELECT citySearch FROM users WHERE name='" + userName + "' ORDER BY id DESC LIMIT 5")
 	var city string
 	var cities []string
 	for rows.Next() {
