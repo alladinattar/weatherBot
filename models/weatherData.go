@@ -6,7 +6,6 @@ import (
 )
 
 type Weather struct {
-
 	Weather []struct {
 		ID          int    `json:"id"`
 		Main        string `json:"main"`
@@ -18,12 +17,10 @@ type Weather struct {
 		FeelsLike float64 `json:"feels_like"`
 		TempMin   float64 `json:"temp_min"`
 		TempMax   float64 `json:"temp_max"`
-
 	} `json:"main"`
-
 }
 
-func (w Weather) GetImage () string{
+func (w Weather) GetImage() string {
 	var goodWthr = "./images/goodWeather.png"
 	var badWthr = "./images/badWeather.png"
 	season := getSeason()
