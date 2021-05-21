@@ -1,12 +1,16 @@
 package models
 
 import (
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func StartCommand(chatID int64) tgbotapi.MessageConfig {
-	msg := tgbotapi.NewMessage(chatID, fmt.Sprint("Please, enter city"))
+
+	location := tgbotapi.NewKeyboardButton("Send my location")
+	location.RequestLocation = true
+	keyboard := tgbotapi.NewReplyKeyboard([]tgbotapi.KeyboardButton{location})
+	msg := tgbotapi.NewMessage(chatID, "Enter city")
+	msg.ReplyMarkup = keyboard
 	return msg
 }
 

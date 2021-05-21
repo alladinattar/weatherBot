@@ -19,11 +19,6 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 		return tgbotapi.PhotoConfig{}, err
 	}
 
-	if err != nil {
-		msg := tgbotapi.NewMessage(chatID, fmt.Sprint(err))
-		bot.Send(msg)
-		log.Fatal(err)
-	}
 	wthr := Weather{}
 	body, _ := ioutil.ReadAll(res.Body)
 	err = json.Unmarshal(body, &wthr)

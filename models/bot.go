@@ -9,7 +9,8 @@ import (
 var bot *tgbotapi.BotAPI
 
 func InitBot() {
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("botToken"))
+	var err error
+	bot, err = tgbotapi.NewBotAPI(os.Getenv("botToken"))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -31,7 +32,10 @@ func InitBot() {
 		if len(command) != 0 {
 			if command == "start" {
 				msg := StartCommand(update.Message.Chat.ID)
-				_, err = bot.Send(msg)
+				_, err := bot.Send(msg)
+				if err != nil {
+					log.Fatal(err)
+				}
 				continue
 			} else if command == "history" {
 				history := HistoryCommand(update.Message.From.UserName, update.Message.Chat.ID)
@@ -39,7 +43,11 @@ func InitBot() {
 				continue
 			}
 		}
-		uploadPhoto, _ := tempSearch(update.Message.Text, update.Message.Chat.ID, update.Message.From.UserName)
+		city := update.Message.Text
+		if update.Message.Location.Latitude != 0 && update.Message.Location.Longitude != 0 {
+			city = getCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
+		}
+		uploadPhoto, _ := tempSearch(city, update.Message.Chat.ID, update.Message.From.UserName)
 		_, err = bot.Send(uploadPhoto)
 	}
 }
