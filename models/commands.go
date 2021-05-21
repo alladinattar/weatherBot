@@ -5,7 +5,6 @@ import (
 )
 
 func StartCommand(chatID int64) tgbotapi.MessageConfig {
-
 	location := tgbotapi.NewKeyboardButton("Send my location")
 	location.RequestLocation = true
 	keyboard := tgbotapi.NewReplyKeyboard([]tgbotapi.KeyboardButton{location})

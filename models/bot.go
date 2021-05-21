@@ -44,7 +44,7 @@ func InitBot() {
 			}
 		}
 		city := update.Message.Text
-		if update.Message.Location.Latitude != 0 && update.Message.Location.Longitude != 0 {
+		if update.Message.Location != nil {
 			city = getCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
 		}
 		uploadPhoto, _ := tempSearch(city, update.Message.Chat.ID, update.Message.From.UserName)

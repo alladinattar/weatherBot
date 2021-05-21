@@ -42,7 +42,7 @@ func (w Weather) GetImage() string {
 		return badWthr
 
 	} else if season == "spring" {
-		if w.Main.Temp > 5 {
+		if w.Main.Temp > 10 {
 			return goodWthr
 		}
 		return badWthr
