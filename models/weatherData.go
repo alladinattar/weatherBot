@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -24,25 +25,26 @@ func (w Weather) GetImage() string {
 	var goodWthr = "./images/goodWeather.png"
 	var badWthr = "./images/badWeather.png"
 	season := getSeason()
+	fmt.Println(season)
 	if season == "summer" {
-		if w.Main.Temp > 20 {
+		if w.Main.Temp-272 > 20 {
 			return goodWthr
 		}
 		return badWthr
 
 	} else if season == "autumn" {
-		if w.Main.Temp > 5 {
+		if w.Main.Temp-272 > 10 {
 			return goodWthr
 		}
 		return badWthr
 	} else if season == "winter" {
-		if w.Main.Temp > -10 {
+		if w.Main.Temp-272 > -10 {
 			return goodWthr
 		}
 		return badWthr
 
 	} else if season == "spring" {
-		if w.Main.Temp > 10 {
+		if w.Main.Temp-272 > 10 {
 			return goodWthr
 		}
 		return badWthr
