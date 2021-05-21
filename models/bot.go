@@ -32,7 +32,7 @@ func InitBot() {
 		if len(command) != 0 {
 			if command == "start" {
 				msg := StartCommand(update.Message.Chat.ID)
-				_, err := bot.Send(msg)
+				_, err = bot.Send(msg)
 				if err != nil {
 					log.Fatal(err)
 				}
