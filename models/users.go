@@ -1,19 +1,15 @@
 package models
 
-type User struct {
-	UserName string
-}
-
-func (u User) AddCitySearch(city string) error {
+func AddCitySearch(city string, userName string) error {
 	statement, _ :=
 		db.Prepare("INSERT INTO users (name, citySearch) VALUES (?, ?)")
-	_, err := statement.Exec(u.UserName, city)
+	_, err := statement.Exec(userName, city)
 	return err
 }
 
-func (u User) GetHistory() []string {
+func GetHistoryByName(userName string) []string {
 	rows, _ :=
-		db.Query("SELECT citySearch FROM users WHERE name = '" + u.UserName + "'")
+		db.Query("SELECT citySearch FROM users WHERE name = '" + userName + "'")
 	var city string
 	var cities []string
 	for rows.Next() {

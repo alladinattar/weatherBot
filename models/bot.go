@@ -1,19 +1,18 @@
-package main
+package models
 
 import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/tgBot/models"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 )
 
-func main() {
-	models.InitDB("./weatherData.db")
+var bot *tgbotapi.BotAPI
 
+func InitBot() {
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("botToken"))
 	if err != nil {
 		log.Panic(err)
@@ -25,12 +24,13 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates, err := bot.GetUpdatesChan(u)
-
+	if err!=nil{
+		log.Fatal(err)
+	}
 	for update := range updates {
 		if update.Message == nil {
 			continue
 		}
-		user := models.User{UserName: update.Message.From.UserName}
 		command := update.Message.Command()
 		if len(command) != 0 {
 			if command == "start" {
@@ -39,7 +39,7 @@ func main() {
 				continue
 			} else if command == "history" {
 				var cities string
-				history := user.GetHistory()
+				history := GetHistoryByName(update.Message.From.UserName)
 				for _, city := range history {
 					cities = cities + city + "\n"
 				}
@@ -61,13 +61,13 @@ func main() {
 			bot.Send(msg)
 			log.Fatal(err)
 		}
-		wthr := models.Weather{}
+		wthr := Weather{}
 		body, _ := ioutil.ReadAll(res.Body)
 		err = json.Unmarshal(body, &wthr)
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = user.AddCitySearch(update.Message.Text)
+		err = AddCitySearch(update.Message.Text, update.Message.From.UserName)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -79,3 +79,5 @@ func main() {
 		bot.Send(uploadPhoto)
 	}
 }
+
+

@@ -24,8 +24,8 @@ type Weather struct {
 }
 
 func (w Weather) GetImage () string{
-	var goodWthr string = "./images/goodWeather.png"
-	var badWthr string = "./images/badWeather.png"
+	var goodWthr = "./images/goodWeather.png"
+	var badWthr = "./images/badWeather.png"
 	season := getSeason()
 	if season == "summer" {
 		if w.Main.Temp > 20 {
