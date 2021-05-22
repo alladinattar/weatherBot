@@ -33,6 +33,6 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 	image := wthr.GetImage()
 	uploadPhoto := tgbotapi.NewPhotoUpload(chatID, image)
 
-	uploadPhoto.Caption = fmt.Sprint("Temp: ", int(wthr.Main.Temp-272), " degrees", "\n", "Feels like: ", int(wthr.Main.FeelsLike), "\n", "Main: ", wthr.Weather[0].Main)
+	uploadPhoto.Caption = fmt.Sprint("Temp: ", int(wthr.Main.Temp-272), " degrees", "\n", "Feels like: ", int(wthr.Main.FeelsLike-272), "\n", "Main: ", wthr.Weather[0].Main)
 	return uploadPhoto, err
 }
