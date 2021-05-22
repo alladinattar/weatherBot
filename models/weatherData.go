@@ -1,9 +1,7 @@
 package models
 
 import (
-	"errors"
 	"fmt"
-	"log"
 )
 
 type Weather struct {
@@ -22,35 +20,21 @@ type Weather struct {
 }
 
 func (w Weather) GetImage() string {
-	var goodWthr = "./images/goodWeather.png"
-	var badWthr = "./images/badWeather.png"
+	var clouds = "./images/clouds.jpg"
+	var snow = "./images/snow.jpg"
+	var rain = "./images/rain.jpg"
+	var clear = "./images/clear.jpg"
 	season := getSeason()
 	fmt.Println(season)
-	if season == "summer" {
-		if w.Main.Temp-272 > 20 {
-			return goodWthr
-		}
-		return badWthr
-
-	} else if season == "autumn" {
-		if w.Main.Temp-272 > 10 {
-			return goodWthr
-		}
-		return badWthr
-	} else if season == "winter" {
-		if w.Main.Temp-272 > -10 {
-			return goodWthr
-		}
-		return badWthr
-
-	} else if season == "spring" {
-		if w.Main.Temp-272 > 10 {
-			return goodWthr
-		}
-		return badWthr
-
+	if w.Weather[0].Main == "Clouds" {
+		return clouds
+	} else if w.Weather[0].Main == "Snow" {
+		return snow
+	} else if w.Weather[0].Main == "Rain" {
+		return rain
+	} else if w.Weather[0].Main == "Clear" {
+		return clear
 	} else {
-		log.Println(errors.New("error when get season"))
+		return ""
 	}
-	return ""
 }
