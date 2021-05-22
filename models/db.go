@@ -15,7 +15,8 @@ func InitDB(dataSourceName string) {
 	if err != nil {
 		log.Panic(err)
 	}
-
+ 	statement, _ := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, citySearch TEXT)")
+  	statement.Exec()
 	if err = db.Ping(); err != nil {
 		log.Panic(err)
 	}
