@@ -4,5 +4,5 @@
 This is simple telegram weather bot written on Golang
 Bot use sqlite database for store data about users, requests history and etc
 
-##Try it!!!
-[@weaaatheeerBot](https://google.com)
+## Try it!!!
+[@weaaatheeerBot]()
