@@ -1,0 +1,7 @@
+version: '3'
+services:
+  weatherbot:
+    build: .
+    restart: always
+    volumes:
+      - /home/ubuntu/weatherBot/images:/images
