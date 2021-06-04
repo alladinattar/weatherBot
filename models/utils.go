@@ -12,7 +12,6 @@ import (
 
 func getSeason() string {
 	month := time2.Now().Month()
-	log.Println(int(month))
 	if month >= 6 && month <= 8 {
 		log.WithFields(log.Fields{
 			"package":  "models",

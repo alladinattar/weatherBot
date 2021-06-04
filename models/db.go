@@ -3,7 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3" //sqlite driver
+	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
 )
 
