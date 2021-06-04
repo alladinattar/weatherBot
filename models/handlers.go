@@ -16,6 +16,7 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 	if res.StatusCode == http.StatusNotFound {
 		msg := tgbotapi.NewMessage(chatID, fmt.Sprint("City not found"))
 		bot.Send(msg)
+
 		return tgbotapi.PhotoConfig{}, err
 	}
 
@@ -28,13 +29,11 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 	err = AddCitySearch(city, userName)
 
 	if err != nil {
-		if err != nil {
-			log.WithFields(log.Fields{
-				"package":  "models",
-				"function": "AddCitySearch",
-				"error":    err,
-			}).Error("Error when add city to database")
-		}
+		log.WithFields(log.Fields{
+			"package":  "models",
+			"function": "AddCitySearch",
+			"error":    err,
+		}).Error("Error when add city to database")
 	}
 
 	image := wthr.GetImage()
