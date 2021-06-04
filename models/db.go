@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3" //sqlite driver
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 var db *sql.DB
@@ -13,10 +13,14 @@ func InitDB(dataSourceName string) {
 	var err error
 	db, err = sql.Open("sqlite3", dataSourceName)
 	if err != nil {
-		log.Panic(err)
+		log.WithFields(log.Fields{
+			"package":  "models",
+			"function": "initDB",
+			"error":    err,
+		}).Panic("Failed to open database: ", err)
 	}
- 	statement, _ := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, citySearch TEXT)")
-  	statement.Exec()
+	statement, _ := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, citySearch TEXT)")
+	statement.Exec()
 	if err = db.Ping(); err != nil {
 		log.Panic(err)
 	}
@@ -26,6 +30,7 @@ func AddCitySearch(city string, userName string) error {
 	statement, _ :=
 		db.Prepare("INSERT INTO users (name, citySearch) VALUES (?, ?)")
 	_, err := statement.Exec(userName, city)
+
 	return err
 }
 

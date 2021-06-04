@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 )
@@ -26,8 +26,15 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 		log.Fatal(err)
 	}
 	err = AddCitySearch(city, userName)
+
 	if err != nil {
-		log.Fatal(err)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"package":  "models",
+				"function": "AddCitySearch",
+				"error":    err,
+			}).Error("Error when add city to database")
+		}
 	}
 
 	image := wthr.GetImage()

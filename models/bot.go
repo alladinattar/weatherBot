@@ -2,7 +2,7 @@ package models
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -12,7 +12,11 @@ func InitBot() {
 	var err error
 	bot, err = tgbotapi.NewBotAPI(os.Getenv("botToken"))
 	if err != nil {
-		log.Panic(err)
+		log.WithFields(log.Fields{
+			"package":  "models",
+			"function": "initBot",
+			"error":    err,
+		}).Panic("Cannot start bot")
 	}
 	bot.Debug = true
 
@@ -34,12 +38,23 @@ func InitBot() {
 				msg := StartCommand(update.Message.Chat.ID)
 				_, err = bot.Send(msg)
 				if err != nil {
-					log.Fatal(err)
+					log.WithFields(log.Fields{
+						"package":  "models",
+						"function": "initBot",
+						"error":    err,
+					}).Error("Cannot send start command")
 				}
 				continue
 			} else if command == "history" {
 				history := HistoryCommand(update.Message.From.UserName, update.Message.Chat.ID)
 				_, err = bot.Send(history)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"package":  "models",
+						"function": "initBot",
+						"error":    err,
+					}).Error("Cannot send history command")
+				}
 				continue
 			}
 		}
@@ -47,7 +62,22 @@ func InitBot() {
 		if update.Message.Location != nil {
 			city = getCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
 		}
-		uploadPhoto, _ := tempSearch(city, update.Message.Chat.ID, update.Message.From.UserName)
+		uploadPhoto, err := tempSearch(city, update.Message.Chat.ID, update.Message.From.UserName)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"package":  "models",
+				"function": "initBot",
+				"error":    err,
+			}).Error("Cannot get photo")
+		}
+
 		_, err = bot.Send(uploadPhoto)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"package":  "models",
+				"function": "initBot",
+				"error":    err,
+			}).Error("Cannot send photo")
+		}
 	}
 }

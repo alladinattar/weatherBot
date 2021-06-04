@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
 type Weather struct {
@@ -35,6 +36,10 @@ func (w Weather) GetImage() string {
 	} else if w.Weather[0].Main == "Clear" {
 		return clear
 	} else {
+		log.WithFields(log.Fields{
+			"package":  "models",
+			"function": "GetImage",
+		}).Warning("Cannot get image, unknown weather.Main")
 		return ""
 	}
 }
