@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 )
@@ -16,6 +16,7 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 	if res.StatusCode == http.StatusNotFound {
 		msg := tgbotapi.NewMessage(chatID, fmt.Sprint("City not found"))
 		bot.Send(msg)
+
 		return tgbotapi.PhotoConfig{}, err
 	}
 
@@ -26,13 +27,18 @@ func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfi
 		log.Fatal(err)
 	}
 	err = AddCitySearch(city, userName)
+
 	if err != nil {
-		log.Fatal(err)
+		log.WithFields(log.Fields{
+			"package":  "models",
+			"function": "AddCitySearch",
+			"error":    err,
+		}).Error("Error when add city to database")
 	}
 
 	image := wthr.GetImage()
 	uploadPhoto := tgbotapi.NewPhotoUpload(chatID, image)
 
-	uploadPhoto.Caption = fmt.Sprint("Temp: ", int(wthr.Main.Temp-272), " degrees", "\n", "Feels like: ", int(wthr.Main.FeelsLike-272), "\n", "Main: ", wthr.Weather[0].Main)
+	uploadPhoto.Caption = fmt.Sprint("Temp: ", int(wthr.Main.Temp-272), " C°", "\n", "Feels like: ", int(wthr.Main.FeelsLike-272), " C°", "\n", "Main: ", wthr.Weather[0].Main)
 	return uploadPhoto, err
 }
