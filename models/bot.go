@@ -4,6 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"strings"
 )
 
 var bot *tgbotapi.BotAPI
@@ -61,6 +62,18 @@ func InitBot() {
 		city := update.Message.Text
 		if update.Message.Location != nil {
 			city = getCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
+		}
+		if strings.Contains(update.Message.Text, "\n") {
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Invalid input")
+			_, err = bot.Send(msg)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"package":  "models",
+					"function": "initBot",
+					"error":    err,
+				}).Error("Invalid input")
+			}
+			continue
 		}
 		uploadPhoto, err := tempSearch(city, update.Message.Chat.ID, update.Message.From.UserName)
 		if err != nil {
