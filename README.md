@@ -8,8 +8,6 @@ Bot use sqlite database for store data about users, requests history and etc. Th
 
 
 
-![GitHub Logo](/images/iphone_image.jpg)
-Format: ![Alt Text](url)
+![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
 
-![GitHub Logo](/images/desktop_image.png)
-Format: ![Alt Text](url)
+
