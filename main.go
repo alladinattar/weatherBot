@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	models.InitDB("./weatherData.db")
+	models.InitDB("db/weatherData.db")
 	models.InitBot()
 
 }
