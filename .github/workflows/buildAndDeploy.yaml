@@ -43,7 +43,7 @@ jobs:
           private_key: ${{ secrets.PRIVATE_KEY }}
           commands: |
             cd  /home/rinat/weatherBot/
-            ls
+            $botToken
             
             
   
