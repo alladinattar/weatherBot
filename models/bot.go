@@ -11,7 +11,7 @@ var bot *tgbotapi.BotAPI
 
 func InitBot() {
 	var err error
-	bot, err = tgbotapi.NewBotAPI(os.Getenv("botToken"))
+	bot, err = tgbotapi.NewBotAPI(os.Getenv("botToke"))
 	if err != nil {
 		log.WithFields(log.Fields{
 			"package":  "models",
