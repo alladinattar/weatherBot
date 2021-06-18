@@ -3,6 +3,7 @@ on:
   push: 
     branches:
       - master
+      #
    # types: closed
 jobs:
   buildBinFile:
