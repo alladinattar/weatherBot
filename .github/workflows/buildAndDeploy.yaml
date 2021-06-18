@@ -42,7 +42,7 @@ jobs:
           user: 'rinat'
           private_key: ${{ secrets.PRIVATE_KEY }}
           commands: |
-            ./bot
+            /home/rinat/weatherBot/bot
             
             
   
