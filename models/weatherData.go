@@ -44,6 +44,8 @@ func (w Weather) GetImage() string {
 		return image + timeOfDay + "_rain.jpg"
 	case "Clear":
 		return image + timeOfDay + "_clear.jpg"
+	case "Haze":
+		return image + "haze.jpg"
 	default:
 		log.WithFields(log.Fields{
 			"package":  "models",
