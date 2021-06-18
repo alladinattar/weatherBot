@@ -32,7 +32,7 @@ jobs:
           host: ${{ secrets.MY_HOST }}
           username: 'rinat'
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "bot"
+          source: "./bot"
           target: "/home/rinat/bot"
       - name: deploy
         uses: docker://evaneos/ssh-action:0.1.0
