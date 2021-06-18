@@ -8,3 +8,9 @@ type LocationInfo struct {
 		Locality   string `json:"locality"`
 	} `json:"data"`
 }
+
+type Config struct {
+	BotToken string `json:"botToken"`
+	ApiToken string `json:"apiToken"`
+	GeoToken string `json:"geoToken"`
+}
