@@ -34,7 +34,7 @@ jobs:
           user: 'rinat'
           key: ${{ secrets.PRIVATE_KEY }}
           scp: |
-            bot rinat@${{ secrets.MY_HOST }}:/home/rinat
+            bot rinat@${{ secrets.MY_HOST }}:/home/rinat/weatherBot
       - name: deploy
         uses: docker://evaneos/ssh-action:0.1.0
         with:
