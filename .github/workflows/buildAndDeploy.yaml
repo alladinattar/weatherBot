@@ -1,9 +1,9 @@
 name: buildAndDeploy
 on:
-  pull_request: 
+  push: 
     branches:
       - master
-    types: closed
+   # types: closed
 jobs:
   buildBinFile:
     runs-on: ubuntu-20.04
