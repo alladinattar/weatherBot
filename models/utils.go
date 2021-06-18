@@ -6,7 +6,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"os"
 	time2 "time"
 )
 
@@ -41,7 +40,7 @@ func getSeason() string {
 }
 
 func getCityByCoordinates(lat float64, long float64) string {
-	res, err := http.Get("http://api.positionstack.com/v1/reverse?access_key=" + os.Getenv("geoToken") + "&query=" + fmt.Sprintf("%f", lat) + "," + fmt.Sprintf("%f", long))
+	res, err := http.Get("http://api.positionstack.com/v1/reverse?access_key=" + config.GeoToken + "&query=" + fmt.Sprintf("%f", lat) + "," + fmt.Sprintf("%f", long))
 	if err != nil {
 		log.Fatal(err)
 	}

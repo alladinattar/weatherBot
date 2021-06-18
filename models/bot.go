@@ -1,17 +1,21 @@
 package models
 
 import (
+	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"os"
 	"strings"
 )
 
 var bot *tgbotapi.BotAPI
+var config Config
 
 func InitBot() {
+	ReadConfig(&config)
 	var err error
-	bot, err = tgbotapi.NewBotAPI(os.Getenv("botToken"))
+	bot, err = tgbotapi.NewBotAPI(config.BotToken)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"package":  "models",
@@ -68,6 +72,7 @@ func InitBot() {
 			_, err = bot.Send(msg)
 			if err != nil {
 				log.WithFields(log.Fields{
+
 					"package":  "models",
 					"function": "initBot",
 					"error":    err,
@@ -92,5 +97,24 @@ func InitBot() {
 				"error":    err,
 			}).Error("Cannot send photo")
 		}
+	}
+}
+
+func ReadConfig(config *Config) {
+	file, err := os.Open(".config.json")
+	if err != nil {
+		log.WithFields(log.Fields{
+			"functions": "ReadConfig",
+		}).Error("Cannot read config file")
+	}
+	conf, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = json.Unmarshal(conf, &config)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"functions": "ReadConfig",
+		}).Error("Invalid json")
 	}
 }

@@ -7,11 +7,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"os"
 )
 
 func tempSearch(city string, chatID int64, userName string) (tgbotapi.PhotoConfig, error) {
-	res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + os.Getenv("apiToken"))
+	res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + config.ApiToken)
 
 	if res.StatusCode == http.StatusNotFound {
 		msg := tgbotapi.NewMessage(chatID, fmt.Sprint("City not found"))
