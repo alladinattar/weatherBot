@@ -21,7 +21,7 @@ jobs:
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
               dep ensure
           fi
-          - name: go-crossbuild
+
       - name: build
         run: |
           go build -v -o bot
