@@ -34,7 +34,6 @@ jobs:
           user: 'rinat'
           key: ${{ secrets.PRIVATE_KEY }}
           scp: |
-            sample1.txt john@example.com:~/sample1.dat
             bot rinat@${{ secrets.MY_HOST }}:~/bot
       - name: deploy
         uses: docker://evaneos/ssh-action:0.1.0
