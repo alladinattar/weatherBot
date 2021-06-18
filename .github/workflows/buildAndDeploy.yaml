@@ -35,11 +35,12 @@ jobs:
           source: "bot"
           target: "bot"
       - name: deploy
-        uses: JimCronqvist/action-ssh@0.1.1
+        uses: docker://evaneos/ssh-action:0.1.0
         with:
           hosts: 185.251.91.103
-          privateKey: ${{ secrets.PRIVATE_KEY }}
-          command: |
+          user: 'rinat'
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          commands: |
             ./bot
             
             
