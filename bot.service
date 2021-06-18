@@ -1,0 +1,11 @@
+[Unit]
+Description=telegram weather bot
+After=syslog.target
+After=network.target
+[Service]
+WorkingDirectory=/home/rinat/weatherBot
+Restart=always
+ExecStart= /home/rinat/weatherBot/bot --daemon
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
