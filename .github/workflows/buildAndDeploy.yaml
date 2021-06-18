@@ -33,7 +33,7 @@ jobs:
           user: 'rinat'
           private_key: ${{ secrets.PRIVATE_KEY }}
           commands: |
-            killall bot
+            sudo killall bot
         
       - name: SCP Files
         uses: alinz/ssh-scp-action@v0.1.2
