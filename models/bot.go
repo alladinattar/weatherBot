@@ -13,6 +13,7 @@ var bot *tgbotapi.BotAPI
 var config Config
 
 func InitBot() {
+	log.SetLevel(log.ErrorLevel)
 	ReadConfig(&config)
 	var err error
 	bot, err = tgbotapi.NewBotAPI(config.BotToken)
