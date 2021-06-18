@@ -30,8 +30,7 @@ jobs:
         with:
           host: ${{ secrets.MY_HOST }}
           username: 'rinat'
-          port: ${{ secrets.PORT }}
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           source: "bot"
           target: "bot"
       - name: deploy
