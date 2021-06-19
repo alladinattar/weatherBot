@@ -6,6 +6,6 @@ import (
 
 func main() {
 	models.InitDB("db/weatherData.db")
-	models.InitBot()
-
+	bot := models.NewBot()
+	bot.StartBot()
 }
