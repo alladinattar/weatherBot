@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//
 type Bot struct {
 	bot          *tgbotapi.BotAPI
 	updateConfig tgbotapi.UpdateConfig
