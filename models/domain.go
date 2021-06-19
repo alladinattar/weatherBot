@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	time2 "time"
 )
@@ -28,7 +27,6 @@ type Weather struct {
 func (w Weather) getImage() string {
 	image := "./images/"
 	var timeOfDay string
-	fmt.Println(time2.Now().Unix())
 	if int(time2.Now().Unix()) < w.Sys.Sunrise || int(time2.Now().Unix()) > w.Sys.Sunset {
 		timeOfDay = "night"
 	} else {
@@ -46,11 +44,7 @@ func (w Weather) getImage() string {
 	case "Haze":
 		return image + "haze.jpg"
 	default:
-		log.WithFields(log.Fields{
-			"package":  "models",
-			"function": "GetImage",
-		}).Warning("Cannot get image, unknown weather.Main")
-		return ""
+		return image + "fail.jpg"
 	}
 }
 
@@ -81,5 +75,4 @@ func (w Weather) getSeason() string {
 		}).Info("Season was received, spring")
 		return "spring"
 	}
-
 }

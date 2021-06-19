@@ -44,13 +44,14 @@ type tempApi struct {
 func (t tempApi) SearchTemp(city string) (string, string) {
 	res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + config.ApiToken)
 	if res.StatusCode == http.StatusNotFound {
-		return "City not Found", ""
+		return "City not Found", "images/fail.jpg"
 	}
 	body, _ := ioutil.ReadAll(res.Body)
 	err = json.Unmarshal(body, &t.weather)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(t.weather.getImage())
 	return "Temp: " + strconv.Itoa(int(t.weather.Main.Temp-272)) +
 		" C°\n" + "Feels like: " + strconv.Itoa(int(t.weather.Main.FeelsLike-272)) +
 		" C°\n" + "Main: " + t.weather.Weather[0].Main, t.weather.getImage()

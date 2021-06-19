@@ -94,7 +94,6 @@ func (b Bot) StartBot() {
 		caption, image := tempapi.SearchTemp(city)
 		uploadPhoto := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, image)
 		uploadPhoto.Caption = caption
-
 		if err != nil {
 			log.WithFields(log.Fields{
 				"package":  "models",
@@ -102,7 +101,10 @@ func (b Bot) StartBot() {
 				"error":    err,
 			}).Error("Cannot get photo")
 		}
-
+		err = AddCitySearch(city, update.Message.Chat.UserName)
+		if err != nil {
+			log.Fatal(err)
+		}
 		_, err = b.bot.Send(uploadPhoto)
 		if err != nil {
 			log.WithFields(log.Fields{
