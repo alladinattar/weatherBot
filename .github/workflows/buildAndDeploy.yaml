@@ -2,7 +2,7 @@ name: buildAndDeploy
 on:
   push: 
     branches:
-      - master
+      - botOnWebhook
   
 jobs:
   buildBinFile:
