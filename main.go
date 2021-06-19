@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/tgBot/models"
+	"log"
+	"net/http"
 )
 
 func main() {
-	models.InitDB("db/weatherData.db")
-	bot := models.NewBot()
-	bot.StartBot()
+	log.Fatal(http.ListenAndServeTLS(":8080","certs/server.crt","certs/server.key", nil))
+
 }
