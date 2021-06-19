@@ -9,14 +9,19 @@ import (
 	"strings"
 )
 
-var bot *tgbotapi.BotAPI
+type Bot struct {
+	bot          *tgbotapi.BotAPI
+	updateConfig tgbotapi.UpdateConfig
+}
+
 var config Config
 
-func InitBot() {
+func NewBot() *Bot {
+	bot := Bot{}
 	log.SetLevel(log.ErrorLevel)
 	ReadConfig(&config)
 	var err error
-	bot, err = tgbotapi.NewBotAPI(config.BotToken)
+	bot.bot, err = tgbotapi.NewBotAPI(config.BotToken)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"package":  "models",
@@ -24,13 +29,15 @@ func InitBot() {
 			"error":    err,
 		}).Panic("Cannot start bot")
 	}
-	bot.Debug = true
+	bot.bot.Debug = true
+	log.Println("Authorized on account ", bot.bot.Self.UserName)
+	bot.updateConfig = tgbotapi.NewUpdate(0)
+	bot.updateConfig.Timeout = 60
+	return &bot
+}
 
-	log.Println("Authorized on account ", bot.Self.UserName)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-	updates, err := bot.GetUpdatesChan(u)
+func (b Bot) StartBot() {
+	updates, err := b.bot.GetUpdatesChan(b.updateConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,38 +46,39 @@ func InitBot() {
 			continue
 		}
 		command := update.Message.Command()
-		if len(command) != 0 {
-			if command == "start" {
-				msg := StartCommand(update.Message.Chat.ID)
-				_, err = bot.Send(msg)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"package":  "models",
-						"function": "initBot",
-						"error":    err,
-					}).Error("Cannot send start command")
-				}
-				continue
-			} else if command == "history" {
-				history := HistoryCommand(update.Message.From.UserName, update.Message.Chat.ID)
-				_, err = bot.Send(history)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"package":  "models",
-						"function": "initBot",
-						"error":    err,
-					}).Error("Cannot send history command")
-				}
-				continue
+		switch command {
+		case "start":
+			msg := StartCommand(update.Message.Chat.ID)
+			_, err = b.bot.Send(msg)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"package":  "models",
+					"function": "initBot",
+					"error":    err,
+				}).Error("Cannot send start command")
 			}
+		case "history":
+			history := HistoryCommand(update.Message.From.UserName, update.Message.Chat.ID)
+			_, err = b.bot.Send(history)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"package":  "models",
+					"function": "initBot",
+					"error":    err,
+				}).Error("Cannot send history command")
+			}
+			continue
 		}
+
 		city := update.Message.Text
 		if update.Message.Location != nil {
-			city = getCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
+			var location LocationInfo
+			city = location.GetCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
 		}
+
 		if strings.Contains(update.Message.Text, "\n") {
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Invalid input")
-			_, err = bot.Send(msg)
+			_, err = b.bot.Send(msg)
 			if err != nil {
 				log.WithFields(log.Fields{
 
@@ -81,7 +89,11 @@ func InitBot() {
 			}
 			continue
 		}
-		uploadPhoto, err := tempSearch(city, update.Message.Chat.ID, update.Message.From.UserName)
+		var tempapi tempApi
+		caption, image := tempapi.SearchTemp(city)
+		uploadPhoto := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, image)
+		uploadPhoto.Caption = caption
+
 		if err != nil {
 			log.WithFields(log.Fields{
 				"package":  "models",
@@ -90,7 +102,7 @@ func InitBot() {
 			}).Error("Cannot get photo")
 		}
 
-		_, err = bot.Send(uploadPhoto)
+		_, err = b.bot.Send(uploadPhoto)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"package":  "models",
@@ -99,6 +111,12 @@ func InitBot() {
 			}).Error("Cannot send photo")
 		}
 	}
+}
+
+type Config struct {
+	BotToken string `json:"botToken"`
+	ApiToken string `json:"apiToken"`
+	GeoToken string `json:"geoToken"`
 }
 
 func ReadConfig(config *Config) {
