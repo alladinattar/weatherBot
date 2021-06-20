@@ -10,7 +10,7 @@ import (
 
 type Env struct {
 	BotToken string `json:"botToken"`
-	ApiToken string `json:"apiToken"`
+	APIToken string `json:"apiToken"`
 	GeoToken string `json:"geoToken"`
 	db       *sql.DB
 }

@@ -76,7 +76,7 @@ func (b Bot) handleMessage(message *tgbotapi.Message) {
 		}
 		return
 	}
-	caption, image := api.SearchTemp(b.env.ApiToken, city)
+	caption, image := api.SearchTemp(b.env.APIToken, city)
 	uploadPhoto := tgbotapi.NewPhotoUpload(message.Chat.ID, image)
 	uploadPhoto.Caption = caption
 
