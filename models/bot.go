@@ -42,78 +42,84 @@ func (b Bot) StartBot() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	b.handleUpdates(updates)
+
+}
+
+func (b Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
 		if update.Message == nil {
 			continue
 		}
-		command := update.Message.Command()
-		switch command {
-		case "start":
-			msg := StartCommand(update.Message.Chat.ID)
-			_, err = b.bot.Send(msg)
-			if err != nil {
-				log.WithFields(log.Fields{
-					"package":  "models",
-					"function": "initBot",
-					"error":    err,
-				}).Error("Cannot send start command")
-			}
-		case "history":
-			history := HistoryCommand(update.Message.From.UserName, update.Message.Chat.ID)
-			_, err = b.bot.Send(history)
-			if err != nil {
-				log.WithFields(log.Fields{
-					"package":  "models",
-					"function": "initBot",
-					"error":    err,
-				}).Error("Cannot send history command")
-			}
+		if update.Message.IsCommand() {
+			b.handleCommand(update.Message)
 			continue
 		}
+		b.handleMessage(update.Message)
+	}
+}
 
-		city := update.Message.Text
-		if update.Message.Location != nil {
-			var location LocationInfo
-			city = location.GetCityByCoordinates(update.Message.Location.Latitude, update.Message.Location.Longitude)
-		}
-
-		if strings.Contains(update.Message.Text, "\n") {
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Invalid input")
-			_, err = b.bot.Send(msg)
-			if err != nil {
-				log.WithFields(log.Fields{
-
-					"package":  "models",
-					"function": "initBot",
-					"error":    err,
-				}).Error("Invalid input")
-			}
-			continue
-		}
-		var tempapi tempApi
-		caption, image := tempapi.SearchTemp(city)
-		uploadPhoto := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, image)
-		uploadPhoto.Caption = caption
+func (b Bot) handleCommand(message *tgbotapi.Message) {
+	switch message.Text {
+	case "start":
+		msg := StartCommand(message.Chat.ID)
+		_, err := b.bot.Send(msg)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"package":  "models",
 				"function": "initBot",
 				"error":    err,
-			}).Error("Cannot get photo")
+			}).Error("Cannot send start command")
 		}
-		err = AddCitySearch(city, update.Message.Chat.UserName)
-		if err != nil {
-			log.Fatal(err)
-		}
-		_, err = b.bot.Send(uploadPhoto)
+	case "history":
+		history := HistoryCommand(message.From.UserName, message.Chat.ID)
+		_, err := b.bot.Send(history)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"package":  "models",
 				"function": "initBot",
 				"error":    err,
-			}).Error("Cannot send photo")
+			}).Error("Cannot send history command")
 		}
 	}
+}
+func (b Bot) handleMessage(message *tgbotapi.Message) {
+	city := message.Text
+	if message.Location != nil {
+		var location LocationInfo
+		city = location.GetCityByCoordinates(message.Location.Latitude, message.Location.Longitude)
+	}
+
+	if strings.Contains(message.Text, "\n") {
+		msg := tgbotapi.NewMessage(message.Chat.ID, "Invalid input")
+		_, err := b.bot.Send(msg)
+		if err != nil {
+			log.WithFields(log.Fields{
+
+				"package":  "models",
+				"function": "initBot",
+				"error":    err,
+			}).Error("Invalid input")
+		}
+	}
+	var tempapi tempApi
+	caption, image := tempapi.SearchTemp(city)
+	uploadPhoto := tgbotapi.NewPhotoUpload(message.Chat.ID, image)
+	uploadPhoto.Caption = caption
+
+	err := AddCitySearch(city, message.Chat.UserName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = b.bot.Send(uploadPhoto)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"package":  "models",
+			"function": "initBot",
+			"error":    err,
+		}).Error("Cannot send photo")
+	}
+
 }
 
 type Config struct {
