@@ -64,7 +64,7 @@ func (b Bot) handleMessage(message *tgbotapi.Message) {
 			}).Error("Invalid input")
 		}
 	}
-	var tempapi api.tempApi
+	var tempapi api.TempApi
 	caption, image := tempapi.SearchTemp(b.env, city)
 	uploadPhoto := tgbotapi.NewPhotoUpload(message.Chat.ID, image)
 	uploadPhoto.Caption = caption

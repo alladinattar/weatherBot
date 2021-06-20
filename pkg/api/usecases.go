@@ -39,11 +39,11 @@ func (location LocationInfo) GetCityByCoordinates(env *telegram.Env, lat float64
 	}
 }
 
-type tempApi struct {
+type TempApi struct {
 	weather models.Weather
 }
 
-func (t tempApi) SearchTemp(env *telegram.Env, city string) (string, string) {
+func (t TempApi) SearchTemp(env *telegram.Env, city string) (string, string) {
 	res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + env.ApiToken)
 	if res.StatusCode == http.StatusNotFound {
 		return "City not Found", "images/fail.jpg"
@@ -53,8 +53,8 @@ func (t tempApi) SearchTemp(env *telegram.Env, city string) (string, string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(t.weather.getImage())
+	fmt.Println(t.weather.GetImage())
 	return "Temp: " + strconv.Itoa(int(t.weather.Main.Temp-272)) +
 		" C°\n" + "Feels like: " + strconv.Itoa(int(t.weather.Main.FeelsLike-272)) +
-		" C°\n" + "Main: " + t.weather.Weather[0].Main, t.weather.getImage()
+		" C°\n" + "Main: " + t.weather.Weather[0].Main, t.weather.GetImage()
 }

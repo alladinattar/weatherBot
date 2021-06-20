@@ -24,7 +24,7 @@ type Weather struct {
 	} `json:"sys"`
 }
 
-func (w Weather) getImage() string {
+func (w Weather) GetImage() string {
 	image := "./images/"
 	var timeOfDay string
 	if int(time2.Now().Unix()) < w.Sys.Sunrise || int(time2.Now().Unix()) > w.Sys.Sunset {
