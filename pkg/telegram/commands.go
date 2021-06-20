@@ -3,6 +3,7 @@ package telegram
 import (
 	"database/sql"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	db2 "github.com/tgBot/pkg/db"
 )
 
 func StartCommand(chatID int64) tgbotapi.MessageConfig {
@@ -16,7 +17,7 @@ func StartCommand(chatID int64) tgbotapi.MessageConfig {
 
 func HistoryCommand(db *sql.DB, userName string, charID int64) tgbotapi.MessageConfig {
 	var cities string
-	history := GetHistoryByName(db, userName)
+	history := db2.GetHistoryByName(db, userName)
 	for _, city := range history {
 		cities = cities + city + "\n"
 	}

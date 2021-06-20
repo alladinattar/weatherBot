@@ -4,6 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
 	"github.com/tgBot/pkg/api"
+	"github.com/tgBot/pkg/db"
 	"strings"
 )
 
@@ -47,10 +48,20 @@ func (b Bot) handleCommand(message *tgbotapi.Message) {
 func (b Bot) handleMessage(message *tgbotapi.Message) {
 	city := message.Text
 	if message.Location != nil {
+		log.Info("Handle location user ", message.Location.Latitude, message.Location.Latitude)
 		var location api.LocationInfo
-		city = location.GetCityByCoordinates(b.env, message.Location.Latitude, message.Location.Longitude)
+		var err error
+		city, err = location.GetCityByCoordinates(b.env.GeoToken, message.Location.Latitude, message.Location.Latitude)
+		if err != nil {
+			log.Error("Geo API down")
+			msg := tgbotapi.NewMessage(message.Chat.ID, "Geo API don't work, try later")
+			_, err := b.bot.Send(msg)
+			if err != nil {
+				log.Error("Cannot send telegram message")
+			}
+			return
+		}
 	}
-
 	if strings.Contains(message.Text, "\n") {
 		log.Error("Handle invalid message")
 		msg := tgbotapi.NewMessage(message.Chat.ID, "Invalid input")
@@ -63,13 +74,13 @@ func (b Bot) handleMessage(message *tgbotapi.Message) {
 				"error":    err,
 			}).Error("Invalid input")
 		}
+		return
 	}
-	var tempapi api.TempApi
-	caption, image := tempapi.SearchTemp(b.env, city)
+	caption, image := api.SearchTemp(b.env.ApiToken, city)
 	uploadPhoto := tgbotapi.NewPhotoUpload(message.Chat.ID, image)
 	uploadPhoto.Caption = caption
 
-	err := AddCitySearch(b.env.db, city, message.Chat.UserName)
+	err := db.AddCitySearch(b.env.db, city, message.Chat.UserName)
 	if err != nil {
 		log.Fatal(err)
 	}

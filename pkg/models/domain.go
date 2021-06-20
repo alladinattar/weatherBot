@@ -24,6 +24,10 @@ type Weather struct {
 	} `json:"sys"`
 }
 
+func NewWeather() *Weather {
+	return &Weather{}
+}
+
 func (w Weather) GetImage() string {
 	image := "./images/"
 	var timeOfDay string

@@ -25,7 +25,7 @@ func NewBot() *Bot {
 		}).Panic("Cannot start bot")
 	}
 	bot.bot.Debug = false
-	log.Println("Authorized on account ", bot.bot.Self.UserName)
+	log.Info("Authorized on account ", bot.bot.Self.UserName)
 	bot.updateConfig = tgbotapi.NewUpdate(0)
 	bot.updateConfig.Timeout = 60
 	return &bot
