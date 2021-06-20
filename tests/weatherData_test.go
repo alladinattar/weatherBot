@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/tgBot/models"
+	"github.com/tgBot/pkg/models"
 	"testing"
 )
 
