@@ -1,9 +1,11 @@
-package models
+package api
 
 import (
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"github.com/tgBot/pkg/models"
+	"github.com/tgBot/pkg/telegram"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -18,15 +20,15 @@ type LocationInfo struct {
 	} `json:"data"`
 }
 
-func (location LocationInfo) GetCityByCoordinates(lat float64, long float64) string {
-	res, err := http.Get("http://api.positionstack.com/v1/reverse?access_key=" + config.GeoToken + "&query=" + fmt.Sprintf("%f", lat) + "," + fmt.Sprintf("%f", long))
+func (location LocationInfo) GetCityByCoordinates(env *telegram.Env, lat float64, long float64) string {
+	res, err := http.Get("http://api.positionstack.com/v1/reverse?access_key=" + env.GeoToken + "&query=" + fmt.Sprintf("%f", lat) + "," + fmt.Sprintf("%f", long))
 	if err != nil {
 		log.Fatal(err)
 		resp, err := ioutil.ReadAll(res.Body)
 		err = json.Unmarshal(resp, &location)
 		if err != nil {
 			log.WithFields(log.Fields{
-				"package":  "models",
+				"package":  "telegram",
 				"function": "getCityByCoordinates",
 				"error":    err,
 			}).Error("Cannot get city by coordinates")
@@ -38,11 +40,11 @@ func (location LocationInfo) GetCityByCoordinates(lat float64, long float64) str
 }
 
 type tempApi struct {
-	weather Weather
+	weather models.Weather
 }
 
-func (t tempApi) SearchTemp(city string) (string, string) {
-	res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + config.ApiToken)
+func (t tempApi) SearchTemp(env *telegram.Env, city string) (string, string) {
+	res, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + env.ApiToken)
 	if res.StatusCode == http.StatusNotFound {
 		return "City not Found", "images/fail.jpg"
 	}

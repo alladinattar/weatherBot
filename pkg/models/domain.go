@@ -52,25 +52,25 @@ func (w Weather) getSeason() string {
 	month := time2.Now().Month()
 	if month >= 6 && month <= 8 {
 		log.WithFields(log.Fields{
-			"package":  "models",
+			"package":  "telegram",
 			"function": "getSeason",
 		}).Info("Season was received, summer")
 		return "summer"
 	} else if month > 8 && month <= 11 {
 		log.WithFields(log.Fields{
-			"package":  "models",
+			"package":  "telegram",
 			"function": "getSeason",
 		}).Info("Season was received, autumn")
 		return "autumn"
 	} else if month > 11 && month <= 2 {
 		log.WithFields(log.Fields{
-			"package":  "models",
+			"package":  "telegram",
 			"function": "getSeason",
 		}).Info("Season was received, winter")
 		return "winter"
 	} else {
 		log.WithFields(log.Fields{
-			"package":  "models",
+			"package":  "telegram",
 			"function": "getSeason",
 		}).Info("Season was received, spring")
 		return "spring"

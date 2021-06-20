@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/tgBot/models"
+	"github.com/tgBot/pkg/telegram"
 )
 
 func main() {
-	models.InitDB("db/weatherData.db")
-	bot := models.NewBot()
+	bot := telegram.NewBot()
 	bot.StartBot()
 }
