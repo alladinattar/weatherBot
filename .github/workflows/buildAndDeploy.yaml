@@ -32,7 +32,7 @@ jobs:
           host: ${{ secrets.MY_HOST }}
           user: 'rinat'
           key: ${{ secrets.PRIVATE_KEY }}
-          port: 27
+          port: 22
           scp: |
             bot rinat@${{ secrets.MY_HOST }}:/home/rinat/weatherBot/
 
