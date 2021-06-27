@@ -1,10 +1,16 @@
 package main
 
 import (
-	"github.com/tgBot/pkg/telegram"
+	"context"
+	"net/http"
 )
 
-func main() {
-	bot := telegram.NewBot()
-	bot.StartBot()
+type Response struct {
+	StatusCode int         `json:"statusCode"`
+	Body       interface{} `json:"body"`
+}
+
+func Handler(ctx context.Context) (request *http.Request) {
+
+	return
 }
